@@ -1,10 +1,17 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.model;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 
-@Embeddable
+@Entity
 public class Emplacamento {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank(message = "A placa é obrigatória.")
     private String placa;
@@ -15,6 +22,9 @@ public class Emplacamento {
     @NotBlank(message = "A cidade do emplacamento é obrigatória.")
     private String cidade;
 
+    public Long getId() {
+        return id;
+    }
 
     public String getPlaca() {
         return placa;
