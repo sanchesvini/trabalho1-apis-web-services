@@ -23,25 +23,26 @@ public class BoletimFurtoVeiculo {
     private String periodoOcorrencia;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "boletim_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "boletim")
     @NotEmpty(message = "É necessário informar ao menos uma parte envolvida.")
     @Valid
     private List<Parte> partes;
 
-    @Embedded
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     @NotNull(message = "O local da ocorrência é obrigatório.")
     @Valid
     private Endereco localOcorrencia;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "emplacamento.cidade", column = @Column(name = "cidade_emplacamento")),
-            @AttributeOverride(name = "emplacamento.estado", column = @Column(name = "estado_emplacamento"))
-    })
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "veiculo_id", referencedColumnName = "id")
     @NotNull(message = "O veículo furtado é obrigatório.")
     @Valid
     private Veiculo veiculoFurtado;
+
+    public Long getId() {
+        return id;
+    }
 
     public Date getDataOcorrencia() {
         return dataOcorrencia;
@@ -65,6 +66,11 @@ public class BoletimFurtoVeiculo {
 
     public void setPartes(List<Parte> partes) {
         this.partes = partes;
+        if (partes != null) {
+            for (Parte parte : partes) {
+                parte.setBoletim(this);
+            }
+        }
     }
 
     public Endereco getLocalOcorrencia() {
