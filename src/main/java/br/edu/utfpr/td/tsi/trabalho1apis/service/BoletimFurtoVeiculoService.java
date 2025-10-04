@@ -1,9 +1,9 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.service;
 
-import br.edu.utfpr.td.tsi.trabalho1apis.model.BoletimFurtoVeiculo;
+import br.edu.utfpr.td.tsi.trabalho1apis.model.*;
 import br.edu.utfpr.td.tsi.trabalho1apis.repository.BoletimFurtoVeiculoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.BeanUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,7 @@ public class BoletimFurtoVeiculoService {
     @Autowired
     private BoletimFurtoVeiculoRepository repository;
 
+    @Transactional
     public BoletimFurtoVeiculo registrar(BoletimFurtoVeiculo boletim) {
         return repository.save(boletim);
     }
@@ -35,12 +36,53 @@ public class BoletimFurtoVeiculoService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Boletim com o ID " + id + " não encontrado"));
     }
 
+    @Transactional
     public BoletimFurtoVeiculo atualizar(Long id, BoletimFurtoVeiculo boletim) {
         BoletimFurtoVeiculo boletimExistente = buscarPorId(id);
-        BeanUtils.copyProperties(boletim, boletimExistente, "id");
+
+        boletimExistente.setDataOcorrencia(boletim.getDataOcorrencia());
+        boletimExistente.setPeriodoOcorrencia(boletim.getPeriodoOcorrencia());
+
+        if (boletim.getLocalOcorrencia() != null) {
+            Endereco enderecoExistente = boletimExistente.getLocalOcorrencia();
+            Endereco enderecoAtualizacao = boletim.getLocalOcorrencia();
+            enderecoExistente.setLogradouro(enderecoAtualizacao.getLogradouro());
+            enderecoExistente.setNumero(enderecoAtualizacao.getNumero());
+            enderecoExistente.setBairro(enderecoAtualizacao.getBairro());
+            enderecoExistente.setCidade(enderecoAtualizacao.getCidade());
+            enderecoExistente.setEstado(enderecoAtualizacao.getEstado());
+        }
+
+        if (boletim.getVeiculoFurtado() != null) {
+            Veiculo veiculoExistente = boletimExistente.getVeiculoFurtado();
+            Veiculo veiculoAtualizacao = boletim.getVeiculoFurtado();
+
+            veiculoExistente.setAnoFabricacao(veiculoAtualizacao.getAnoFabricacao());
+            veiculoExistente.setCor(veiculoAtualizacao.getCor());
+            veiculoExistente.setMarca(veiculoAtualizacao.getMarca());
+            veiculoExistente.setTipoVeiculo(veiculoAtualizacao.getTipoVeiculo());
+
+            if (veiculoAtualizacao.getEmplacamento() != null) {
+                Emplacamento emplacamentoExistente = veiculoExistente.getEmplacamento();
+                Emplacamento emplacamentoAtualizacao = veiculoAtualizacao.getEmplacamento();
+
+                emplacamentoExistente.setPlaca(emplacamentoAtualizacao.getPlaca());
+                emplacamentoExistente.setCidade(emplacamentoAtualizacao.getCidade());
+                emplacamentoExistente.setEstado(emplacamentoAtualizacao.getEstado());
+            }
+        }
+
+        if (boletim.getPartes() != null) {
+            boletimExistente.getPartes().clear();
+            boletimExistente.getPartes().addAll(boletim.getPartes());
+            for (Parte parte : boletimExistente.getPartes()) {
+                parte.setBoletim(boletimExistente);
+            }
+        }
         return repository.save(boletimExistente);
     }
 
+    @Transactional
     public void deletar(Long id) {
         buscarPorId(id);
         repository.deleteById(id);
