@@ -1,9 +1,10 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -30,27 +31,12 @@ public class Parte {
     @NotBlank(message = "O tipo de envolvimento é obrigatório.")
     private String tipoEnvolvimento;
 
-    @ManyToOne
-    @JoinColumn(name = "boletim_id")
-    @JsonIgnore
-    private BoletimFurtoVeiculo boletim;
-
-    @JsonCreator
-    public Parte(@JsonProperty("nome") String nome,
-                 @JsonProperty("email") String email,
-                 @JsonProperty("telefone") String telefone,
-                 @JsonProperty("tipoEnvolvimento") String tipoEnvolvimento) {
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.tipoEnvolvimento = tipoEnvolvimento;
-    }
-
-    public Parte() {
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -83,13 +69,5 @@ public class Parte {
 
     public void setTipoEnvolvimento(String tipoEnvolvimento) {
         this.tipoEnvolvimento = tipoEnvolvimento;
-    }
-
-    public BoletimFurtoVeiculo getBoletim() {
-        return boletim;
-    }
-
-    public void setBoletim(BoletimFurtoVeiculo boletim) {
-        this.boletim = boletim;
     }
 }

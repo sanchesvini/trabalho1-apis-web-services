@@ -1,14 +1,10 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 
-@Entity
+@Embeddable
 public class Endereco {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @NotBlank(message = "O logradouro é obrigatório.")
     private String logradouro;
@@ -24,10 +20,6 @@ public class Endereco {
 
     @NotBlank(message = "O estado é obrigatório.")
     private String estado;
-
-    public Long getId() {
-        return id;
-    }
 
     public String getLogradouro() {
         return logradouro;

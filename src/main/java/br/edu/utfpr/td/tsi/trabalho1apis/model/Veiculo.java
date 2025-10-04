@@ -1,18 +1,15 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-@Entity
+@Embeddable
 public class Veiculo {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Min(value = 1900, message = "O ano de fabricação deve ser válido.")
     @Max(value = 2026, message = "O ano de fabricação deve ser válido.")
@@ -27,15 +24,10 @@ public class Veiculo {
     @NotBlank(message = "O tipo do veículo é obrigatório.")
     private String tipoVeiculo;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn (name = "emplacamento_id", referencedColumnName = "id")
+    @Embedded
     @NotNull(message = "Os dados de emplacamento são obrigatórios.")
     @Valid
     private Emplacamento emplacamento;
-
-    public Long getId() {
-        return id;
-    }
 
     public int getAnoFabricacao() {
         return anoFabricacao;
