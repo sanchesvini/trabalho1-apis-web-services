@@ -76,4 +76,7 @@ public class Veiculo {
     public void setEmplacamento(Emplacamento emplacamento) {
         this.emplacamento = emplacamento;
     }
+
+    public void setId(Long id) {
+    }
 }
