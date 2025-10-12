@@ -22,11 +22,11 @@ public class BoletimFurtoVeiculoService {
 
     public List<BoletimFurtoVeiculo> listarTodos(String cidade, String periodo) {
         if (cidade != null && periodo != null) {
-            return repository.findByLocalOcorrenciaCidadeAndPeriodoOcorrencia(cidade, periodo);
+            return repository.findByLocalOcorrenciaCidadeAndPeriodoOcorrenciaContainingIgnoreCase(cidade, periodo);
         } else if (cidade != null) {
-            return repository.findByLocalOcorrenciaCidade(cidade);
+            return repository.findByLocalOcorrenciaCidadeContainingIgnoreCase(cidade);
         } else if (periodo != null) {
-            return repository.findByPeriodoOcorrencia(periodo);
+            return repository.findByPeriodoOcorrenciaContainingIgnoreCase(periodo);
         } else {
             return repository.findAll();
         }
@@ -37,48 +37,24 @@ public class BoletimFurtoVeiculoService {
     }
 
     @Transactional
-    public BoletimFurtoVeiculo atualizar(Long id, BoletimFurtoVeiculo boletim) {
+    public BoletimFurtoVeiculo atualizar(Long id, BoletimFurtoVeiculo boletimAtualizado) {
         BoletimFurtoVeiculo boletimExistente = buscarPorId(id);
 
-        boletimExistente.setDataOcorrencia(boletim.getDataOcorrencia());
-        boletimExistente.setPeriodoOcorrencia(boletim.getPeriodoOcorrencia());
+        boletimExistente.setDataOcorrencia(boletimAtualizado.getDataOcorrencia());
+        boletimExistente.setPeriodoOcorrencia(boletimAtualizado.getPeriodoOcorrencia());
 
-        if (boletim.getLocalOcorrencia() != null) {
-            Endereco enderecoExistente = boletimExistente.getLocalOcorrencia();
-            Endereco enderecoAtualizacao = boletim.getLocalOcorrencia();
-            enderecoExistente.setLogradouro(enderecoAtualizacao.getLogradouro());
-            enderecoExistente.setNumero(enderecoAtualizacao.getNumero());
-            enderecoExistente.setBairro(enderecoAtualizacao.getBairro());
-            enderecoExistente.setCidade(enderecoAtualizacao.getCidade());
-            enderecoExistente.setEstado(enderecoAtualizacao.getEstado());
+        if (boletimAtualizado.getLocalOcorrencia() != null) {
+            boletimExistente.setLocalOcorrencia(boletimAtualizado.getLocalOcorrencia());
         }
 
-        if (boletim.getVeiculoFurtado() != null) {
-            Veiculo veiculoExistente = boletimExistente.getVeiculoFurtado();
-            Veiculo veiculoAtualizacao = boletim.getVeiculoFurtado();
-
-            veiculoExistente.setAnoFabricacao(veiculoAtualizacao.getAnoFabricacao());
-            veiculoExistente.setCor(veiculoAtualizacao.getCor());
-            veiculoExistente.setMarca(veiculoAtualizacao.getMarca());
-            veiculoExistente.setTipoVeiculo(veiculoAtualizacao.getTipoVeiculo());
-
-            if (veiculoAtualizacao.getEmplacamento() != null) {
-                Emplacamento emplacamentoExistente = veiculoExistente.getEmplacamento();
-                Emplacamento emplacamentoAtualizacao = veiculoAtualizacao.getEmplacamento();
-
-                emplacamentoExistente.setPlaca(emplacamentoAtualizacao.getPlaca());
-                emplacamentoExistente.setCidade(emplacamentoAtualizacao.getCidade());
-                emplacamentoExistente.setEstado(emplacamentoAtualizacao.getEstado());
-            }
+        if (boletimAtualizado.getVeiculoFurtado() != null) {
+            boletimExistente.setVeiculoFurtado(boletimAtualizado.getVeiculoFurtado());
         }
 
-        if (boletim.getPartes() != null) {
-            boletimExistente.getPartes().clear();
-            boletimExistente.getPartes().addAll(boletim.getPartes());
-            for (Parte parte : boletimExistente.getPartes()) {
-                parte.setBoletim(boletimExistente);
-            }
+        if (boletimAtualizado.getPartes() != null) {
+            boletimExistente.setPartes(boletimAtualizado.getPartes());
         }
+
         return repository.save(boletimExistente);
     }
 
