@@ -2,6 +2,7 @@ package br.edu.utfpr.td.tsi.trabalho1apis.controller;
 
 import br.edu.utfpr.td.tsi.trabalho1apis.model.BoletimFurtoVeiculo;
 import br.edu.utfpr.td.tsi.trabalho1apis.service.BoletimFurtoVeiculoService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class BoletimFurtoVeiculoController {
         try {
             BoletimFurtoVeiculo boletim = service.buscarPorId(id);
             return ResponseEntity.ok(boletim);
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -44,7 +45,7 @@ public class BoletimFurtoVeiculoController {
         try {
             BoletimFurtoVeiculo boletimAtualizado = service.atualizar(id, boletim);
             return ResponseEntity.ok(boletimAtualizado);
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -55,7 +56,7 @@ public class BoletimFurtoVeiculoController {
         try {
             service.deletar(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
