@@ -20,5 +20,4 @@ public interface BoletimFurtoVeiculoRepository extends JpaRepository<BoletimFurt
     List<BoletimFurtoVeiculo> findByVeiculoFurtadoCorContainingIgnoreCase(String cor);
 
     List<BoletimFurtoVeiculo> findByVeiculoFurtadoTipoVeiculoContainingIgnoreCase(String tipoVeiculo);
-
 }
