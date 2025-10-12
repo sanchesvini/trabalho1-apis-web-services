@@ -19,5 +19,4 @@ public class VeiculosController {
         List<Veiculo> veiculos = service.listarTodosVeiculos(placa, cor, tipoVeiculo);
         return ResponseEntity.ok(veiculos);
     }
-
 }
