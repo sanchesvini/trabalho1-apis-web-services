@@ -13,7 +13,6 @@ public class Endereco {
     @NotBlank(message = "O logradouro é obrigatório.")
     private String logradouro;
 
-    @NotBlank(message = "O número é obrigatório.")
     private String numero;
 
     @NotBlank(message = "O bairro é obrigatório.")

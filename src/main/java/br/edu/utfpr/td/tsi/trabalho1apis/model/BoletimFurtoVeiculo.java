@@ -3,7 +3,6 @@ package br.edu.utfpr.td.tsi.trabalho1apis.model;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,6 @@ public class BoletimFurtoVeiculo {
 
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "boletim")
-    @NotEmpty(message = "É necessário informar ao menos uma parte envolvida.")
     @Valid
     private List<Parte> partes;
 
