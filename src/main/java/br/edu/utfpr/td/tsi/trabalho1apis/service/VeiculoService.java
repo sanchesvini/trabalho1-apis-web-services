@@ -1,47 +1,33 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.service;
 
-import br.edu.utfpr.td.tsi.trabalho1apis.exceptions.CamposInvalidosException;
 import br.edu.utfpr.td.tsi.trabalho1apis.model.BoletimFurtoVeiculo;
 import br.edu.utfpr.td.tsi.trabalho1apis.model.Veiculo;
-import br.edu.utfpr.td.tsi.trabalho1apis.repository.VeiculoRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
+import br.edu.utfpr.td.tsi.trabalho1apis.repository.BoletimFurtoVeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VeiculoService {
 
     @Autowired
-    private VeiculoRepository veiculoRepository;
+    private BoletimFurtoVeiculoRepository boletimRepository;
 
-    public Veiculo registrarVeiculo(Veiculo veiculo) throws CamposInvalidosException {
-        if(veiculo.getEmplacamento() == null || veiculo.getMarca() == null || veiculo.getTipoVeiculo() == null || (veiculo.getAnoFabricacao() <= new Date().getYear()) || veiculo.getCor() == null){
-            throw new CamposInvalidosException("Campos inválidos ao registrar veículo.");
+    public List<Veiculo> listarTodosVeiculos(String placa, String cor, String tipoVeiculo) {
+        List<BoletimFurtoVeiculo> boletins;
+
+        if (placa != null) {
+            boletins = boletimRepository.findByVeiculoFurtadoEmplacamentoPlacaContainingIgnoreCase(placa);
+        } else if (cor != null) {
+            boletins = boletimRepository.findByVeiculoFurtadoCorContainingIgnoreCase(cor);
+        } else if (tipoVeiculo != null) {
+            boletins = boletimRepository.findByVeiculoFurtadoTipoVeiculoContainingIgnoreCase(tipoVeiculo);
+        } else {
+            boletins = boletimRepository.findAll();
         }
-        return veiculoRepository.save(veiculo);
-    }
-    public Veiculo buscarPorId(Long id) {
-        return veiculoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Veiculo com o ID " + id + " não encontrado"));
-    }
 
-    public List<Veiculo> listarTodosVeiculos() {
-        return veiculoRepository.findAll();
-    }
-
-    public Veiculo atualizarVeiculo(@Valid Veiculo veiculo) throws CamposInvalidosException {
-        buscarPorId(veiculo.getId());
-        if(veiculo.getEmplacamento() == null || veiculo.getMarca() == null || veiculo.getTipoVeiculo() == null || (veiculo.getAnoFabricacao() <= new Date().getYear()) || veiculo.getCor() == null){
-            throw new CamposInvalidosException("Campos inválidos ao registrar veículo.");
-        }
-        return veiculoRepository.save(veiculo);
-    }
-
-    public void deletarVeiculo(Long id) {
-        buscarPorId(id);
-        veiculoRepository.deleteById(id);
+        return boletins.stream().map(BoletimFurtoVeiculo::getVeiculoFurtado).collect(Collectors.toList());
     }
 }
