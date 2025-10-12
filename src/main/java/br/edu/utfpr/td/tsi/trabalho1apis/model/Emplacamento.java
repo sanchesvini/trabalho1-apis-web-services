@@ -13,7 +13,6 @@ public class Emplacamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "A placa é obrigatória.")
     private String placa;
 
     @NotBlank(message = "O estado do emplacamento é obrigatório.")

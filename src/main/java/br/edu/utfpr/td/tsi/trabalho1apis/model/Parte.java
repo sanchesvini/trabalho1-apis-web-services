@@ -1,7 +1,5 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -14,17 +12,14 @@ public class Parte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "O nome é obrigatório.")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String nome;
 
-    @NotBlank(message = "O e-mail é obrigatório.")
     @Email(message = "Formato de e-mail inválido.")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String email;
 
-    @NotBlank(message = "O telefone é obrigatório.")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String telefone;
 
     @NotBlank(message = "O tipo de envolvimento é obrigatório.")
@@ -32,19 +27,8 @@ public class Parte {
 
     @ManyToOne
     @JoinColumn(name = "boletim_id")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private BoletimFurtoVeiculo boletim;
-
-    @JsonCreator
-    public Parte(@JsonProperty("nome") String nome,
-                 @JsonProperty("email") String email,
-                 @JsonProperty("telefone") String telefone,
-                 @JsonProperty("tipoEnvolvimento") String tipoEnvolvimento) {
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.tipoEnvolvimento = tipoEnvolvimento;
-    }
 
     public Parte() {
     }
