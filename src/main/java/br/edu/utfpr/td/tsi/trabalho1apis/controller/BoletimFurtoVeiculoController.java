@@ -1,5 +1,6 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.controller;
 
+import br.edu.utfpr.td.tsi.trabalho1apis.controller.dto.*;
 import br.edu.utfpr.td.tsi.trabalho1apis.model.BoletimFurtoVeiculo;
 import br.edu.utfpr.td.tsi.trabalho1apis.service.BoletimFurtoVeiculoService;
 import br.edu.utfpr.td.tsi.trabalho1apis.service.CsvService;
@@ -11,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/boletins")
@@ -24,22 +27,25 @@ public class BoletimFurtoVeiculoController {
     private CsvService csvService;
 
     @PostMapping
-    public ResponseEntity<BoletimFurtoVeiculo> registrarBoletim(@Valid @RequestBody BoletimFurtoVeiculo boletim) {
-        BoletimFurtoVeiculo novoBoletim = service.registrar(boletim);
+    public ResponseEntity<BoletimFurtoVeiculo> registrarBoletim(@Valid @RequestBody BoletimRequestDTO boletimDTO) {
+        BoletimFurtoVeiculo novoBoletim = service.registrar(boletimDTO.toEntity());
         return new ResponseEntity<>(novoBoletim, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<BoletimFurtoVeiculo>> listarTodosBoletins( @RequestParam(required = false) String cidade, @RequestParam(required = false) String periodo) {
+    public ResponseEntity<List<BoletimResponseDTO>> listarTodosBoletins(@RequestParam(required = false) String cidade, @RequestParam(required = false) String periodo) {
         List<BoletimFurtoVeiculo> boletins = service.listarTodos(cidade, periodo);
-        return ResponseEntity.ok(boletins);
+        List<BoletimResponseDTO> boletinsDTO = boletins.stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(boletinsDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BoletimFurtoVeiculo> buscarBoletimPorId(@PathVariable Long id) {
+    public ResponseEntity<BoletimResponseDTO> buscarBoletimPorId(@PathVariable Long id) {
         try {
             BoletimFurtoVeiculo boletim = service.buscarPorId(id);
-            return ResponseEntity.ok(boletim);
+            return ResponseEntity.ok(toResponseDTO(boletim));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -76,6 +82,38 @@ public class BoletimFurtoVeiculoController {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    private BoletimResponseDTO toResponseDTO(BoletimFurtoVeiculo boletim) {
+        BoletimResponseDTO dto = new BoletimResponseDTO();
+        dto.setDataOcorrencia(boletim.getDataOcorrencia());
+        dto.setPeriodoOcorrencia(boletim.getPeriodoOcorrencia());
+
+        EnderecoDTO enderecoDTO = new EnderecoDTO();
+        enderecoDTO.setLogradouro(boletim.getLocalOcorrencia().getLogradouro());
+        enderecoDTO.setNumero(boletim.getLocalOcorrencia().getNumero());
+        enderecoDTO.setBairro(boletim.getLocalOcorrencia().getBairro());
+        enderecoDTO.setCidade(boletim.getLocalOcorrencia().getCidade());
+        enderecoDTO.setEstado(boletim.getLocalOcorrencia().getEstado());
+        dto.setLocalOcorrencia(enderecoDTO);
+
+
+        VeiculoDTO veiculoDTO = new VeiculoDTO();
+
+        veiculoDTO.setAnoFabricacao(boletim.getVeiculoFurtado().getAnoFabricacao());
+        veiculoDTO.setCor(boletim.getVeiculoFurtado().getCor());
+        veiculoDTO.setMarca(boletim.getVeiculoFurtado().getMarca());
+        veiculoDTO.setTipoVeiculo(boletim.getVeiculoFurtado().getTipoVeiculo());
+
+        EmplacamentoDTO emplacamentoDTO = new EmplacamentoDTO();
+        emplacamentoDTO.setPlaca(boletim.getVeiculoFurtado().getEmplacamento().getPlaca());
+        emplacamentoDTO.setEstado(boletim.getVeiculoFurtado().getEmplacamento().getEstado());
+        emplacamentoDTO.setCidade(boletim.getVeiculoFurtado().getEmplacamento().getCidade());
+        veiculoDTO.setEmplacamento(emplacamentoDTO);
+
+        dto.setVeiculoFurtado(veiculoDTO);
+
+        return dto;
     }
 
 

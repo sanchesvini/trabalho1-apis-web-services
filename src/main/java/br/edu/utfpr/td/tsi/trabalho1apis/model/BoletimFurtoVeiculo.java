@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +19,7 @@ public class BoletimFurtoVeiculo {
     private Long id;
 
     @NotNull(message = "A data da ocorrência é obrigatória")
-    private Date dataOcorrencia;
+    private LocalDate dataOcorrencia;
 
     @NotBlank(message = "O período da ocorrência é obrigatório.")
     private String periodoOcorrencia;
@@ -42,11 +45,11 @@ public class BoletimFurtoVeiculo {
         return id;
     }
 
-    public Date getDataOcorrencia() {
+    public LocalDate getDataOcorrencia() {
         return dataOcorrencia;
     }
 
-    public void setDataOcorrencia(Date dataOcorrencia) {
+    public void setDataOcorrencia(LocalDate dataOcorrencia) {
         this.dataOcorrencia = dataOcorrencia;
     }
 

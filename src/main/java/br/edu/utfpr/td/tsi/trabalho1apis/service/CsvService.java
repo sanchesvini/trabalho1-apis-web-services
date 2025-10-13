@@ -95,7 +95,7 @@ public class CsvService {
                         if (!data_ocorrencia.isEmpty()) {
                             try {
                                 LocalDate data = LocalDate.parse(data_ocorrencia, formatter);
-                                boletim.setDataOcorrencia(Date.valueOf(data));
+                                boletim.setDataOcorrencia(data);
                             } catch (Exception e) {
                                 System.err.println("Data inválida na linha " + numeroLinha + ": " + data_ocorrencia);
                             }
