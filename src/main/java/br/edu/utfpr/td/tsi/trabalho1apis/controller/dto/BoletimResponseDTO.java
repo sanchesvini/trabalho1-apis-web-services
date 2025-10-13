@@ -3,10 +3,10 @@ package br.edu.utfpr.td.tsi.trabalho1apis.controller.dto;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class BoletimResponseDTO {
 
+    private Long id;
     private LocalDate dataOcorrencia;
     private String periodoOcorrencia;
     private EnderecoDTO localOcorrencia;
@@ -42,5 +42,13 @@ public class BoletimResponseDTO {
 
     public void setVeiculoFurtado(VeiculoDTO veiculoFurtado) {
         this.veiculoFurtado = veiculoFurtado;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
