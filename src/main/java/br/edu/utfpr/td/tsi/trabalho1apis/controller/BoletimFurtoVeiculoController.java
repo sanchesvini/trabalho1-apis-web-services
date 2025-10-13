@@ -1,5 +1,6 @@
 package br.edu.utfpr.td.tsi.trabalho1apis.controller;
 
+import br.edu.utfpr.td.tsi.trabalho1apis.controller.dto.BoletimRequestDTO;
 import br.edu.utfpr.td.tsi.trabalho1apis.model.BoletimFurtoVeiculo;
 import br.edu.utfpr.td.tsi.trabalho1apis.service.BoletimFurtoVeiculoService;
 import br.edu.utfpr.td.tsi.trabalho1apis.service.CsvService;
@@ -24,8 +25,8 @@ public class BoletimFurtoVeiculoController {
     private CsvService csvService;
 
     @PostMapping
-    public ResponseEntity<BoletimFurtoVeiculo> registrarBoletim(@Valid @RequestBody BoletimFurtoVeiculo boletim) {
-        BoletimFurtoVeiculo novoBoletim = service.registrar(boletim);
+    public ResponseEntity<BoletimFurtoVeiculo> registrarBoletim(@Valid @RequestBody BoletimRequestDTO boletimDTO) {
+        BoletimFurtoVeiculo novoBoletim = service.registrar(boletimDTO.toEntity());
         return new ResponseEntity<>(novoBoletim, HttpStatus.CREATED);
     }
 
