@@ -35,11 +35,9 @@ public class BoletimRequestDTO {
     public BoletimFurtoVeiculo toEntity() {
         BoletimFurtoVeiculo boletim = new BoletimFurtoVeiculo();
 
-        // Converte LocalDate para java.sql.Date
-        boletim.setDataOcorrencia(Date.valueOf(this.dataOcorrencia));
+        boletim.setDataOcorrencia(this.dataOcorrencia);
         boletim.setPeriodoOcorrencia(this.periodoOcorrencia);
 
-        // Converte EnderecoDTO -> Endereco
         Endereco endereco = new Endereco();
         endereco.setLogradouro(this.localOcorrencia.getLogradouro());
         endereco.setNumero(this.localOcorrencia.getNumero());
@@ -48,14 +46,12 @@ public class BoletimRequestDTO {
         endereco.setEstado(this.localOcorrencia.getEstado());
         boletim.setLocalOcorrencia(endereco);
 
-        // Converte VeiculoDTO -> Veiculo
         Veiculo veiculo = new Veiculo();
         veiculo.setAnoFabricacao(this.veiculoFurtado.getAnoFabricacao());
         veiculo.setCor(this.veiculoFurtado.getCor());
         veiculo.setMarca(this.veiculoFurtado.getMarca());
         veiculo.setTipoVeiculo(this.veiculoFurtado.getTipoVeiculo());
 
-        // Converte EmplacamentoDTO -> Emplacamento
         Emplacamento emplacamento = new Emplacamento();
         emplacamento.setPlaca(this.veiculoFurtado.getEmplacamento().getPlaca());
         emplacamento.setEstado(this.veiculoFurtado.getEmplacamento().getEstado());
@@ -64,7 +60,6 @@ public class BoletimRequestDTO {
 
         boletim.setVeiculoFurtado(veiculo);
 
-        // Converte lista de ParteDTO -> Parte
         if (this.partes != null && !this.partes.isEmpty()) {
             List<Parte> listaPartes = new ArrayList<>();
             for (ParteDTO parteDTO : this.partes) {
@@ -73,7 +68,7 @@ public class BoletimRequestDTO {
                 parte.setEmail(parteDTO.getEmail());
                 parte.setTelefone(parteDTO.getTelefone());
                 parte.setTipoEnvolvimento(parteDTO.getTipoEnvolvimento());
-                parte.setBoletim(boletim); // associa ao boletim
+                parte.setBoletim(boletim);
                 listaPartes.add(parte);
             }
             boletim.setPartes(listaPartes);
