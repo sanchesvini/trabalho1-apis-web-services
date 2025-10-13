@@ -86,6 +86,7 @@ public class BoletimFurtoVeiculoController {
 
     private BoletimResponseDTO toResponseDTO(BoletimFurtoVeiculo boletim) {
         BoletimResponseDTO dto = new BoletimResponseDTO();
+        dto.setId(boletim.getId());
         dto.setDataOcorrencia(boletim.getDataOcorrencia());
         dto.setPeriodoOcorrencia(boletim.getPeriodoOcorrencia());
 
